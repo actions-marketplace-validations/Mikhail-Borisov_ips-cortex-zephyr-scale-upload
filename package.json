@@ -15,7 +15,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://code.rbi.tech/raiffeisen/ips-cortex-zephyr-scale-action"
+    "url": "git+https://github.com/Mikhail-Borisov/ips-cortex-zephyr-scale-upload.git"
   },
   "keywords": [
     "actions",
