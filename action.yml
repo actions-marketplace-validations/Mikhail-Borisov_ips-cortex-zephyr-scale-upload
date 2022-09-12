@@ -1,0 +1,29 @@
+name: 'ips-cortex-zephyr-scale-upload'
+description: 'GitHub action that uploads test reports to Zephyr Scale test management plugin for Jira'
+author: 'Mikhail Borisov'
+
+inputs:
+  jiraBaseUrl:
+    required: true
+    description: 'Base URL of Jira'
+  projectKey:
+    required: true
+    description: 'Jira project key'
+  testCycleKey:
+    required: true
+    description: 'Test Cycle key for which Test Executions should be created'
+  bearerToken:
+    required: true
+    description: 'Bearer token of Jira user that is allowed to edit Zephyr Scale items (test plans, test cases etc.)'
+  zephyrScaleReportPaths:
+    required: true
+    description: 'Glob expression to Zephyr Scale report paths. Default: "**/zephyrscale_result.json"'
+    default: '**/zephyrscale_result.json'
+
+runs:
+  using: 'node16'
+  main: 'dist/index.js'
+
+branding:
+  icon: 'heart'
+  color: 'red'
