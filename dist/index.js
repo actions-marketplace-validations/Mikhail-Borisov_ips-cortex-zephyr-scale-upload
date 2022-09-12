@@ -478,11 +478,13 @@ const utils_1 = __nccwpck_require__(1606);
 function run() {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            const jiraBaseUrl = core.getInput('jiraBaseUrl');
-            const projectKey = core.getInput('projectKey');
-            const bearerToken = core.getInput('bearerToken');
-            const reportPaths = core.getInput('zephyrScaleReportPaths');
-            const testCycleKey = core.getInput('testCycleKey');
+            const jiraBaseUrl = core.getInput('jiraBaseUrl', { required: true });
+            const projectKey = core.getInput('projectKey', { required: true });
+            const bearerToken = core.getInput('bearerToken', { required: true });
+            const reportPaths = core.getInput('zephyrScaleReportPaths', {
+                required: true
+            });
+            const testCycleKey = core.getInput('testCycleKey', { required: true });
             const globber = yield glob.create(reportPaths);
             const files = yield globber.glob();
             const api = new api_1.ZephyrScaleApi(jiraBaseUrl, '1.0', projectKey, bearerToken);
