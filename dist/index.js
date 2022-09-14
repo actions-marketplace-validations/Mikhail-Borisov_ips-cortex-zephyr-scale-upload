@@ -488,7 +488,9 @@ function run() {
             const globber = yield glob.create(reportPaths);
             const files = yield globber.glob();
             const api = new api_1.ZephyrScaleApi(jiraBaseUrl, '1.0', projectKey, bearerToken);
+            core.info(`Requesting info for Test Cycle ${testCycleKey}`);
             const testCycle = yield api.getTestCycle(testCycleKey);
+            core.info(`Got info for Test Cycle ${testCycleKey}:\n${JSON.stringify(testCycle, null, 2)}`);
             if (testCycle.items !== undefined) {
                 const testCasesInTestCycle = new Set(testCycle.items.map(item => item.testCaseKey));
                 const executions = yield (0, utils_1.collectExecutions)(files);
@@ -502,7 +504,14 @@ function run() {
                     };
                     return testResult;
                 });
-                yield api.postTestExecutionsForTestCycle(testCycleKey, testResultsToUpload);
+                if (testResultsToUpload.length > 0) {
+                    core.debug(`Test Executions:\n${JSON.stringify(testResultsToUpload, null, 2)}`);
+                    yield api.postTestExecutionsForTestCycle(testCycleKey, testResultsToUpload);
+                    core.info(`Successfully uploaded Test Executions to Zephyr Scale`);
+                }
+                else {
+                    core.info('There were no test results to upload for the Test Cycle');
+                }
             }
             else {
                 core.info('There are no Test Cases in specified Test Cycle');
@@ -510,8 +519,10 @@ function run() {
         }
         catch (error) {
             let errorMessage = 'Unknown error';
-            if (error instanceof Error)
+            if (error instanceof Error) {
                 errorMessage = error.message;
+                core.error(error);
+            }
             core.setFailed(errorMessage);
         }
     });

@@ -19,7 +19,15 @@ async function run(): Promise<void> {
 
     const api = new ZephyrScaleApi(jiraBaseUrl, '1.0', projectKey, bearerToken)
 
+    core.info(`Requesting info for Test Cycle ${testCycleKey}`)
     const testCycle = await api.getTestCycle(testCycleKey)
+    core.info(
+      `Got info for Test Cycle ${testCycleKey}:\n${JSON.stringify(
+        testCycle,
+        null,
+        2
+      )}`
+    )
     if (testCycle.items !== undefined) {
       const testCasesInTestCycle = new Set(
         testCycle.items.map(item => item.testCaseKey)
@@ -37,16 +45,27 @@ async function run(): Promise<void> {
         }
         return testResult
       })
-      await api.postTestExecutionsForTestCycle(
-        testCycleKey,
-        testResultsToUpload
-      )
+      if (testResultsToUpload.length > 0) {
+        core.debug(
+          `Test Executions:\n${JSON.stringify(testResultsToUpload, null, 2)}`
+        )
+        await api.postTestExecutionsForTestCycle(
+          testCycleKey,
+          testResultsToUpload
+        )
+        core.info(`Successfully uploaded Test Executions to Zephyr Scale`)
+      } else {
+        core.info('There were no test results to upload for the Test Cycle')
+      }
     } else {
       core.info('There are no Test Cases in specified Test Cycle')
     }
   } catch (error) {
     let errorMessage = 'Unknown error'
-    if (error instanceof Error) errorMessage = error.message
+    if (error instanceof Error) {
+      errorMessage = error.message
+      core.error(error)
+    }
 
     core.setFailed(errorMessage)
   }

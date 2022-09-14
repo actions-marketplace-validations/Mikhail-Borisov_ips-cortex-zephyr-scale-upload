@@ -1,6 +1,6 @@
 {
   "name": "ips-cortex-zephyr-scale-upload",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "private": true,
   "description": "GitHub action that uploads test reports to Zephyr Scale test management plugin for Jira",
   "main": "lib/main.js",
